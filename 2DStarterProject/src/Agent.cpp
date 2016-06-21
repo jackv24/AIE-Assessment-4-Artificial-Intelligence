@@ -1,6 +1,6 @@
 #include "Agent.h"
 #include "IBehaviour.h"
-#include "KeyboardController.h"
+#include "FindPathDijkstras.h"
 
 Agent::Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale)
 {
@@ -12,7 +12,7 @@ Agent::Agent(const char* texturePath, const Vector3 position, const float rotati
 
 	m_local_transform = m_scale * m_rotation * m_translation;
 
-	m_behaviours.push_back(new KeyboardController());
+	m_behaviours.push_back(new FindPathDijkstras());
 }
 Agent::~Agent()
 {

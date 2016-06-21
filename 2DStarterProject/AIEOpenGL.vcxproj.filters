@@ -45,16 +45,19 @@
     <ClCompile Include="src\SceneNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Planet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Agent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\IBehaviour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\KeyboardController.cpp">
+    <ClCompile Include="src\PathEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PathNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FindPathDijkstras.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,16 +86,19 @@
     <ClInclude Include="src\Application2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Planet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Agent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IBehaviour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\KeyboardController.h">
+    <ClInclude Include="src\PathEdge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PathNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FindPathDijkstras.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
