@@ -9,15 +9,19 @@
 #include "MathLib.h"
 #include "Scene.h"
 #include "Agent.h"
+#include "Graph.h"
 
 #include <iostream>
 #include <fstream>
 
 Scene* scene;
-
 Agent* agent;
 
+Graph* graph;
+
 bool isKeyHeld = false;
+
+Texture* circleTex;
 
 Application2D::Application2D() {
 	
@@ -33,10 +37,14 @@ bool Application2D::startup() {
 
 	m_spriteBatch = new SpriteBatch();
 
+	graph = new Graph();
+	graph->GenerateNodeGrid(10, 20, 60);
+	circleTex = new Texture("textures/circle.png");
+
 	scene = new Scene();
 
 	//Create sun as root
-	agent = new Agent("textures/trump.png", Vector3(640, 360, 1), 0, Vector3(1, 1, 1));
+	agent = new Agent("textures/Moon.png", Vector3(640, 360, 1), 0, Vector3(1, 1, 1), graph);
 	scene->SetRoot(agent);
 
 	return true;
@@ -47,6 +55,8 @@ void Application2D::shutdown() {
 	delete scene;
 
 	delete agent;
+
+	delete graph;
 
 	delete m_spriteBatch;
 
@@ -111,6 +121,16 @@ void Application2D::draw() {
 	m_spriteBatch->begin();
 
 	agent->Draw(m_spriteBatch);
+
+	for (int i = 0; i < graph->nodes.size(); i++)
+	{
+		m_spriteBatch->drawSprite(circleTex, graph->nodes[i]->position.x, graph->nodes[i]->position.y, 16, 16, 0, 0, 0.5f, 0.5f);
+
+		for (Graph::Edge edge : graph->nodes[i]->connections)
+		{
+			m_spriteBatch->drawLine(graph->nodes[i]->position.x, graph->nodes[i]->position.y, edge.connection->position.x, edge.connection->position.y, 2.0f, 0);
+		}
+	}
 
 	// done drawing sprites
 	m_spriteBatch->end();	

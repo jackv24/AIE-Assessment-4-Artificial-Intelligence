@@ -7,11 +7,12 @@ class IBehaviour;
 #include "Texture.h"
 #include "Vector2.h"
 #include "SpriteBatch.h"
+#include "Graph.h"
 
 class Agent : public SceneNode
 {
 public:
-	Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale);
+	Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale, Graph* pathGraph);
 	~Agent();
 
 	void Update(float deltaTime);

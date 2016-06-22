@@ -1,20 +1,19 @@
 #pragma once
 
 #include "IBehaviour.h"
-#include "PathNode.h"
+#include "Graph.h"
 #include <queue>
 
 class FindPathDijkstras : public IBehaviour
 {
 public:
-	FindPathDijkstras();
+	FindPathDijkstras(Graph* a_graph);
 	~FindPathDijkstras();
 
 	virtual void Update(Agent *pAgent, float deltaTime);
 
-	void FindPath(PathNode* a_nodeA, PathNode* a_nodeB);
-
 private:
-	std::queue<PathNode*> m_nodeQueue;
+	Graph* m_graph;
+	Graph::Node* m_path;
 };
 
