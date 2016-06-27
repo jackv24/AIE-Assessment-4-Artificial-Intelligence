@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClCompile Include="src\Agent.cpp" />
     <ClCompile Include="src\BaseApplication.cpp" />
-    <ClCompile Include="src\FindPathDijkstras.cpp" />
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\gl_core_4_4.c" />
     <ClCompile Include="src\Graph.cpp" />
@@ -28,7 +27,6 @@
   <ItemGroup>
     <ClInclude Include="src\Agent.h" />
     <ClInclude Include="src\BaseApplication.h" />
-    <ClInclude Include="src\FindPathDijkstras.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\gl_core_4_4.h" />
     <ClInclude Include="src\Application2D.h" />

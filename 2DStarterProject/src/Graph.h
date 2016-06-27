@@ -21,7 +21,9 @@ public:
 	{
 		Node();
 		Node(Vector2 a_pos);
-		Node(Vector2 a_pos, float a_gScore, Node* a_parent);		Vector2 position;
+		Node(Vector2 a_pos, float a_gScore, Node* a_parent);
+
+		Vector2 position;
 		float gScore;
 		Node* parent;
 
@@ -31,14 +33,17 @@ public:
 	Graph();
 	virtual ~Graph();
 
-	/*Node *AddNode(float xPos, float yPos);*/
 	void AddConnection(Node* n1, Node* n2);
+	Node* FindNode(Vector2 mousePos, float maxDistance);
 
 	void GenerateNodeGrid(float sizeX, float sizeY, float padding);
+	void AddNode(Vector2 position);
 
-	void FindDijkstrasPath(Node* start, Node* endNode, std::list<Node*> &outPath);
-	void FindNodesInRange(std::vector<Node*> &outNodes, float xPos, float yPos, float radious);
+	void FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &outPath);
 
 	std::vector<Node*> nodes;
+
+	Node* start = nullptr;
+	Node* end = nullptr;
 };
 
