@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 Scene* scene;
 Agent* agent;
@@ -39,8 +40,10 @@ bool Application2D::startup() {
 
 	m_spriteBatch = new SpriteBatch();
 
+	m_font = new Font("./bin/font/consolas.ttf", 32);
+
 	graph = new Graph();
-	//graph->GenerateNodeGrid(10, 20, 60);
+	graph->GenerateNodeGrid(5, 10, 60);
 	circleTex = new Texture("textures/circle.png");
 
 	scene = new Scene();
@@ -61,6 +64,8 @@ void Application2D::shutdown() {
 	delete graph;
 
 	delete m_spriteBatch;
+
+	delete m_font;
 
 	destroyWindow();
 }
@@ -133,10 +138,6 @@ bool Application2D::update(float deltaTime) {
 
 					pathNodes.clear();
 				}
-
-				//If there is a start and end node, find a path between them
-				if (graph->start && graph->end)
-					graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
 			}
 		}
 	}
@@ -149,6 +150,48 @@ bool Application2D::update(float deltaTime) {
 			getCursorPosition(x, y);
 
 			graph->AddNode(Vector2(x, 720 - y));
+		}
+	}
+	else if (isKeyPressed(GLFW_KEY_D))
+	{
+		if (!isKeyHeld)
+		{
+			isKeyHeld = true;
+
+			//If there is a start and end node, find a path between them
+			if (graph->start && graph->end)
+			{
+				//Start timer
+				std::clock_t start;
+				start = std::clock();
+
+				//graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
+				graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
+
+				//Print out time taken to execute pathfinding function (in milliseconds)
+				std::cout << "Time taken (Dijkstra's): " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << "ms" << std::endl;
+			}
+		}
+	}
+	else if (isKeyPressed(GLFW_KEY_A))
+	{
+		if (!isKeyHeld)
+		{
+			isKeyHeld = true;
+
+			//If there is a start and end node, find a path between them
+			if (graph->start && graph->end)
+			{
+				//Start timer
+				std::clock_t start;
+				start = std::clock();
+
+				//graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
+				graph->FindAStarPath(graph->start, graph->end, pathNodes);
+
+				//Print out time taken to execute pathfinding function (in milliseconds)
+				std::cout << "Time taken (A*): " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << "ms" << std::endl;
+			}
 		}
 	}
 	else
@@ -174,7 +217,7 @@ void Application2D::draw() {
 		if (graph->nodes[i] == graph->start || graph->nodes[i] == graph->end)
 			m_spriteBatch->setSpriteColor(0, 255, 255, 1);
 		else
-			m_spriteBatch->setSpriteColor(255, 255, 255, 0.75f);
+			m_spriteBatch->setSpriteColor(128, 128, 128, 1);
 
 		if (pathNodes.size() > 0)
 		{
@@ -182,7 +225,7 @@ void Application2D::draw() {
 			if (std::find(pathNodes.begin(), pathNodes.end(), graph->nodes[i]) != pathNodes.end())
 				m_spriteBatch->setSpriteColor(255, 255, 0, 1);
 			else
-				m_spriteBatch->setSpriteColor(255, 255, 255, 0.75f);
+				m_spriteBatch->setSpriteColor(128, 128, 128, 1);
 		}
 
 		m_spriteBatch->drawSprite(circleTex, graph->nodes[i]->position.x, graph->nodes[i]->position.y, 16, 16, 0, 0, 0.5f, 0.5f);
@@ -190,9 +233,11 @@ void Application2D::draw() {
 		m_spriteBatch->setSpriteColor(1, 1, 1, 0.75f);
 		for (Graph::Edge edge : graph->nodes[i]->connections)
 		{
-			m_spriteBatch->drawLine(graph->nodes[i]->position.x, graph->nodes[i]->position.y, edge.connection->position.x, edge.connection->position.y, 2.0f, 0);
+			m_spriteBatch->drawLine(graph->nodes[i]->position.x, graph->nodes[i]->position.y, edge.connection->position.x, edge.connection->position.y, 2.0f, 1);
 		}
 	}
+
+	m_spriteBatch->drawText(m_font, "Controls:\n - Set start/end nodes: Left Click\n - Create Node: Right Click", 200, 500);
 
 	// done drawing sprites
 	m_spriteBatch->end();	

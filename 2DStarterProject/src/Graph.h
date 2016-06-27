@@ -25,6 +25,8 @@ public:
 
 		Vector2 position;
 		float gScore;
+		float hScore;
+		float fScore;
 		Node* parent;
 
 		std::vector<Graph::Edge> connections;
@@ -40,6 +42,7 @@ public:
 	void AddNode(Vector2 position);
 
 	void FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &outPath);
+	void FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outPath);
 
 	std::vector<Node*> nodes;
 

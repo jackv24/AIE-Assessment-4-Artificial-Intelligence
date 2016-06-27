@@ -21,4 +21,5 @@ public:
 protected:
 
 	SpriteBatch* m_spriteBatch;
+	Font*	m_font;
 };
