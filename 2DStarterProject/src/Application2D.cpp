@@ -43,7 +43,7 @@ bool Application2D::startup() {
 	m_font = new Font("./bin/font/consolas.ttf", 32);
 
 	graph = new Graph();
-	graph->GenerateNodeGrid(5, 10, 60);
+	graph->GenerateNodeGrid(11, 20, 60);
 	circleTex = new Texture("textures/circle.png");
 
 	scene = new Scene();
@@ -151,6 +151,13 @@ bool Application2D::update(float deltaTime) {
 
 			graph->AddNode(Vector2(x, 720 - y));
 		}
+	}
+	else if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
+	{
+		int x, y;
+		getCursorPosition(x, y);
+
+		graph->RemoveNode(graph->FindNode(Vector2(x, 720 - y), 25));
 	}
 	else if (isKeyPressed(GLFW_KEY_D))
 	{

@@ -1,6 +1,7 @@
 #include "Graph.h"
 #include <limits>
 #include <algorithm>
+#include <time.h>
 
 //Edge functions
 Graph::Edge::Edge()
@@ -88,11 +89,14 @@ Graph::Node* Graph::FindNode(Vector2 mousePos, float maxDistance)
 //Generates a grid of nodes
 void Graph::GenerateNodeGrid(float sizeX, float sizeY, float padding)
 {
+	srand(time(NULL));
+
 	for (int y = 0; y < sizeX; y++)
 	{
 		for (int x = 0; x < sizeY; x++)
 		{
-			nodes.push_back(new Node(Vector2(x * padding + padding, y * padding + padding)));
+			if(rand() % 6 > 0)
+				nodes.push_back(new Node(Vector2(x * padding + padding, y * padding + padding)));
 		}
 	}
 
@@ -102,7 +106,7 @@ void Graph::GenerateNodeGrid(float sizeX, float sizeY, float padding)
 		{
 			float distance = Vector2(dest->position - src->position).magnitude();
 
-			if (distance < 100)
+			if (distance < 100 && src != dest)
 				AddConnection(src, dest);
 		}
 	}
@@ -112,8 +116,7 @@ void Graph::GenerateNodeGrid(float sizeX, float sizeY, float padding)
 void Graph::AddNode(Vector2 position)
 {
 	//Create and add new node
-	Node* node = new Node(position);
-	nodes.push_back(node);
+	nodes.push_back(new Node(position));
 
 	//Add connections if within distance
 	for (Node* src : nodes)
@@ -121,15 +124,33 @@ void Graph::AddNode(Vector2 position)
 		for (Node* dest : nodes)
 		{
 			float distance = Vector2(dest->position - src->position).magnitude();
-			float maxDistance = 100;
 
 			//If within arbitrary distance, add connection
-			if (distance < maxDistance)
-			{
+			if (distance < 100 && src != dest)
 				AddConnection(src, dest);
-			}
 		}
 	}
+}
+void Graph::RemoveNode(Node* node)
+{
+	//Make sure there is a node to be removed
+	if (node == nullptr)
+		return;
+
+	//For every connection from every node connected to the node to be deleted...
+	for (int i = node->connections.size() - 1; i >= 0; i--)
+		for (int j = node->connections[i].connection->connections.size() - 1; j >= 0; j--)
+			//...erase any connections to this node
+			if (node->connections[i].connection->connections[j].connection == node)
+				node->connections[i].connection->connections.erase(node->connections[i].connection->connections.begin() + j);
+
+	//Erase the node from the graph
+	nodes.erase(std::remove(nodes.begin(), nodes.end(), node), nodes.end());
+	//Delete the node from memory (which also deletes it's own edges)
+	delete node;
+
+	start = nullptr;
+	end = nullptr;
 }
 
 // Searches the graph starting from the "start" node untill one of
