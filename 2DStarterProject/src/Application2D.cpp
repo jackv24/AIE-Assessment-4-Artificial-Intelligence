@@ -121,7 +121,7 @@ bool Application2D::update(float deltaTime) {
 			int x, y;
 			getCursorPosition(x, y);
 			//Find node at position (within range) take screen height because of how the screen height is found
-			Graph::Node* node = graph->FindNode(Vector2(x, 720 - y), 25);
+			Graph::Node* node = graph->FindNode(Vector2((float)x, 720.0f - (float)y), 25.0f);
 
 			//If this node is not already the start or end
 			if (node != graph->start && node != graph->end)
@@ -149,7 +149,7 @@ bool Application2D::update(float deltaTime) {
 			int x, y;
 			getCursorPosition(x, y);
 
-			graph->AddNode(Vector2(x, 720 - y));
+			graph->AddNode(Vector2((float)x, 720.0f - (float)y));
 		}
 	}
 	else if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
@@ -157,7 +157,8 @@ bool Application2D::update(float deltaTime) {
 		int x, y;
 		getCursorPosition(x, y);
 
-		graph->RemoveNode(graph->FindNode(Vector2(x, 720 - y), 25));
+		if (graph->RemoveNode(graph->FindNode(Vector2((float)x, 720.0f - (float)y), 25.0f)))
+			pathNodes.clear();
 	}
 	else if (isKeyPressed(GLFW_KEY_D))
 	{
@@ -177,6 +178,8 @@ bool Application2D::update(float deltaTime) {
 
 				//Print out time taken to execute pathfinding function (in milliseconds)
 				std::cout << "Time taken (Dijkstra's): " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << "ms" << std::endl;
+
+				agent->SetPath(&pathNodes);
 			}
 		}
 	}
@@ -198,6 +201,8 @@ bool Application2D::update(float deltaTime) {
 
 				//Print out time taken to execute pathfinding function (in milliseconds)
 				std::cout << "Time taken (A*): " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << "ms" << std::endl;
+
+				agent->SetPath(&pathNodes);
 			}
 		}
 	}
@@ -216,9 +221,9 @@ void Application2D::draw() {
 	// begin drawing sprites
 	m_spriteBatch->begin();
 
-	//agent->Draw(m_spriteBatch);
+	agent->Draw(m_spriteBatch);
 	
-	for (int i = 0; i < graph->nodes.size(); i++)
+	for (unsigned int i = 0; i < graph->nodes.size(); i++)
 	{
 		//Set colour of start and end nodes
 		if (graph->nodes[i] == graph->start || graph->nodes[i] == graph->end)

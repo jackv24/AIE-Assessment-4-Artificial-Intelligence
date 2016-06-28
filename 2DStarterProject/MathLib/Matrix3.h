@@ -28,6 +28,9 @@ public:
 	void setRotateY(float angle);
 	void setRotateZ(float angle);
 
+	float GetValue(int column, int row);
+	void SetValue(int column, int row, float value);
+
 private:
 	float m_array[3][3];
 };

@@ -89,7 +89,7 @@ Graph::Node* Graph::FindNode(Vector2 mousePos, float maxDistance)
 //Generates a grid of nodes
 void Graph::GenerateNodeGrid(float sizeX, float sizeY, float padding)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	for (int y = 0; y < sizeX; y++)
 	{
@@ -131,18 +131,23 @@ void Graph::AddNode(Vector2 position)
 		}
 	}
 }
-void Graph::RemoveNode(Node* node)
+bool Graph::RemoveNode(Node* node)
 {
 	//Make sure there is a node to be removed
 	if (node == nullptr)
-		return;
+		return false;
+
+	bool isRemoved = false;
 
 	//For every connection from every node connected to the node to be deleted...
 	for (int i = node->connections.size() - 1; i >= 0; i--)
 		for (int j = node->connections[i].connection->connections.size() - 1; j >= 0; j--)
 			//...erase any connections to this node
 			if (node->connections[i].connection->connections[j].connection == node)
+			{
 				node->connections[i].connection->connections.erase(node->connections[i].connection->connections.begin() + j);
+				isRemoved = true;
+			}
 
 	//Erase the node from the graph
 	nodes.erase(std::remove(nodes.begin(), nodes.end(), node), nodes.end());
@@ -151,6 +156,8 @@ void Graph::RemoveNode(Node* node)
 
 	start = nullptr;
 	end = nullptr;
+
+	return isRemoved;
 }
 
 // Searches the graph starting from the "start" node untill one of
@@ -212,6 +219,8 @@ void Graph::FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &
 	{
 		path.push_back(currentNode);
 		currentNode = currentNode->parent;
+
+		path.reverse();
 	}
 
 	outPath = path;
@@ -275,6 +284,8 @@ void Graph::FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outP
 	{
 		path.push_back(currentNode);
 		currentNode = currentNode->parent;
+
+		path.reverse();
 	}
 
 	outPath = path;

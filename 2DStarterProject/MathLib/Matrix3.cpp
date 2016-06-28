@@ -167,3 +167,13 @@ void Matrix3::setRotateZ(float angle)
 	m_array[2][1] = 0;
 	m_array[2][2] = 1;
 }
+
+float Matrix3::GetValue(int column, int row)
+{
+	return m_array[column][row];
+}
+
+void Matrix3::SetValue(int column, int row, float value)
+{
+	m_array[column][row] = value;
+}

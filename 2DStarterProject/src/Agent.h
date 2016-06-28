@@ -20,6 +20,8 @@ public:
 
 	void AddForce(const Vector2 force);
 
+	void SetPath(std::list<Graph::Node*>* path);
+
 protected:
 	std::vector<IBehaviour*> m_behaviours;
 

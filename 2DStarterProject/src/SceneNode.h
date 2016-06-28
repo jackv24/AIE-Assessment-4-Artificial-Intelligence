@@ -14,7 +14,11 @@ public:
 	void AddChild(SceneNode* node);
 	void RemoveChild(SceneNode* node);
 
+	Vector3 GetPosition();
+	void SetPosition(Vector3 position);
+
 	void UpdateTransforms();
+	void Translate(Vector3 amount);
 
 	void SaveTree(std::ofstream& stream);
 	void LoadTree(std::ifstream& stream);

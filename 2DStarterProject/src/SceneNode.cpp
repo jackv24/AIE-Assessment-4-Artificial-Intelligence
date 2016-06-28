@@ -28,6 +28,17 @@ void SceneNode::RemoveChild(SceneNode* node)
 	node->SetParent(nullptr);
 }
 
+Vector3 SceneNode::GetPosition()
+{
+	return Vector3(m_local_transform.GetValue(2, 0), m_local_transform.GetValue(2, 1), m_local_transform.GetValue(2, 2));
+}
+void SceneNode::SetPosition(Vector3 position)
+{
+	m_local_transform.SetValue(2, 0, position.x);
+	m_local_transform.SetValue(2, 1, position.y);
+	m_local_transform.SetValue(2, 2, position.z);
+}
+
 void SceneNode::UpdateTransforms()
 {
 	if (m_parent != nullptr)
@@ -38,6 +49,11 @@ void SceneNode::UpdateTransforms()
 	{
 		m_children[i]->UpdateTransforms();
 	}
+}
+
+void SceneNode::Translate(Vector3 amount)
+{
+	m_local_transform = Matrix3::CreateTranslation(amount) * m_local_transform;
 }
 
 void SceneNode::SaveTree(std::ofstream& stream)
