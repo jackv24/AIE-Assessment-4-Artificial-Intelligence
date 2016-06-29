@@ -37,6 +37,7 @@ public:
 
 	void AddConnection(Node* n1, Node* n2);
 	Node* FindNode(Vector2 mousePos, float maxDistance);
+	Node* FindClosestNode(Vector2 mousePos);
 
 	void GenerateNodeGrid(float sizeX, float sizeY, float padding);
 	void AddNode(Vector2 position);

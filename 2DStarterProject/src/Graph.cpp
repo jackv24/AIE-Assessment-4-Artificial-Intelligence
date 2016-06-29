@@ -75,15 +75,32 @@ void Graph::AddConnection(Node *n1, Node *n2)
 	n1->connections.push_back(Edge(n2, displacement.magnitude()));
 	n2->connections.push_back(Edge(n1, displacement.magnitude()));
 }
-Graph::Node* Graph::FindNode(Vector2 mousePos, float maxDistance)
+Graph::Node* Graph::FindNode(Vector2 pos, float maxDistance)
 {
 	for (Node* node : nodes)
 	{
-		if (Vector2(mousePos - node->position).magnitude() <= maxDistance)
+		if (Vector2(pos - node->position).magnitude() <= maxDistance)
 			return node;
 	}
 
 	return nullptr;
+}
+Graph::Node* Graph::FindClosestNode(Vector2 pos)
+{
+	float maxDistance = std::numeric_limits<float>::max();
+
+	Node* closestNode = nullptr;
+
+	for (Node* node : nodes)
+	{
+		if (Vector2(pos - node->position).magnitude() < maxDistance)
+		{
+			maxDistance = Vector2(pos - node->position).magnitude();
+			closestNode = node;
+		}
+	}
+
+	return closestNode;
 }
 
 //Generates a grid of nodes
@@ -95,7 +112,7 @@ void Graph::GenerateNodeGrid(float sizeX, float sizeY, float padding)
 	{
 		for (int x = 0; x < sizeY; x++)
 		{
-			if(rand() % 6 > 0)
+			if(rand() % 3 > 0)
 				nodes.push_back(new Node(Vector2(x * padding + padding, y * padding + padding)));
 		}
 	}
@@ -217,10 +234,8 @@ void Graph::FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &
 	//Follow path backwards to get output path
 	while (currentNode != NULL)
 	{
-		path.push_back(currentNode);
+		path.push_front(currentNode);
 		currentNode = currentNode->parent;
-
-		path.reverse();
 	}
 
 	outPath = path;
@@ -262,11 +277,11 @@ void Graph::FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outP
 		for (Edge c : currentNode->connections)
 		{
 			//If this connection is shorter
-			if (currentNode->gScore + c.cost < c.connection->gScore)
+			if ((currentNode->gScore + c.cost < c.connection->gScore))
 			{
 				c.connection->gScore = currentNode->gScore + c.cost;
 				c.connection->hScore = (c.connection->position - endNode->position).magnitude();
-				c.connection->fScore = c.connection->gScore = c.connection->hScore;
+				c.connection->fScore = c.connection->gScore + c.connection->hScore;
 				c.connection->parent = currentNode;
 			}
 
@@ -282,10 +297,8 @@ void Graph::FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outP
 	//Follow path backwards to get output path
 	while (currentNode != NULL)
 	{
-		path.push_back(currentNode);
+		path.push_front(currentNode);
 		currentNode = currentNode->parent;
-
-		path.reverse();
 	}
 
 	outPath = path;

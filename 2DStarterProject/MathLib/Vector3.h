@@ -1,11 +1,14 @@
 #pragma once
 
+#include "Vector2.h"
+
 class Vector3
 {
 public:
 	//Constructors
 	Vector3();
 	Vector3(float xVal, float yVal, float zVal);
+	Vector3(Vector2 vec);
 	//Deconstructor
 	~Vector3();
 

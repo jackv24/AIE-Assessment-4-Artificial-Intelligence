@@ -13,6 +13,12 @@ Vector3::Vector3(float xVal, float yVal, float zVal)
 	y = yVal;
 	z = zVal;
 }
+Vector3::Vector3(Vector2 vec)
+{
+	x = vec.x;
+	y = vec.y;
+	z = 1;
+}
 Vector3::~Vector3()
 {
 

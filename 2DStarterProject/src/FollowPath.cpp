@@ -15,25 +15,27 @@ void FollowPath::Update(Agent *pAgent, float deltaTime)
 {
 	Vector2 agentPos(pAgent->GetPosition().x, pAgent->GetPosition().y);
 
-	static int index = 0;
-
 	if (m_path != nullptr && m_path->size() > 0)
 	{
-		if (index < m_path->size())
+		if (m_index < m_path->size())
 		{
 			std::list<Graph::Node*>::iterator it = m_path->begin();
-			std::advance(it, index++);
+			std::advance(it, m_index);
 
-			pAgent->SetPosition(Vector3((*it)->position.x, (*it)->position.y, 1));
+			if ((pAgent->GetPosition() - (*it)->position).magnitude() < 5)
+				m_index++;
+
+			Vector3 direction = (pAgent->GetPosition() - (*it)->position) * -1;
+			direction.normalise();
+			pAgent->Translate(direction * deltaTime * 200);
 		}
-		else
-			index = 0;
 	}
 }
 
 void FollowPath::SetPath(std::list<Graph::Node*>* path)
 {
 	m_path = path;
-	
+	m_index = 0;
+
 	std::cout << "Set path" << std::endl;
 }

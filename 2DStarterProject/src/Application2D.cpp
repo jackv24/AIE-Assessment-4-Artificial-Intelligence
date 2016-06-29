@@ -43,7 +43,7 @@ bool Application2D::startup() {
 	m_font = new Font("./bin/font/consolas.ttf", 32);
 
 	graph = new Graph();
-	graph->GenerateNodeGrid(11, 20, 60);
+	graph->GenerateNodeGrid(11, 22, 50);
 	circleTex = new Texture("textures/circle.png");
 
 	scene = new Scene();
@@ -121,23 +121,16 @@ bool Application2D::update(float deltaTime) {
 			int x, y;
 			getCursorPosition(x, y);
 			//Find node at position (within range) take screen height because of how the screen height is found
-			Graph::Node* node = graph->FindNode(Vector2((float)x, 720.0f - (float)y), 25.0f);
+			Graph::Node* node = graph->FindClosestNode(Vector2((float)x, 720.0f - (float)y));
 
-			//If this node is not already the start or end
-			if (node != graph->start && node != graph->end)
+			if (node)
 			{
-				//Set node to be either start or end
-				if (graph->start == nullptr)
-					graph->start = node;
-				else if (graph->end == nullptr)
-					graph->end = node;
-				else
-				{
-					graph->start = node;
-					graph->end = nullptr;
+				graph->start = graph->FindClosestNode(Vector2(agent->GetPosition().x, agent->GetPosition().y));
 
-					pathNodes.clear();
-				}
+				graph->end = node;
+
+				graph->FindAStarPath(graph->start, graph->end, pathNodes);
+				agent->SetPath(&pathNodes);
 			}
 		}
 	}
@@ -160,6 +153,8 @@ bool Application2D::update(float deltaTime) {
 		if (graph->RemoveNode(graph->FindNode(Vector2((float)x, 720.0f - (float)y), 25.0f)))
 			pathNodes.clear();
 	}
+	//Press button to pathfind
+	/*
 	else if (isKeyPressed(GLFW_KEY_D))
 	{
 		if (!isKeyHeld)
@@ -205,7 +200,7 @@ bool Application2D::update(float deltaTime) {
 				agent->SetPath(&pathNodes);
 			}
 		}
-	}
+	}*/
 	else
 		isKeyHeld = false;
 

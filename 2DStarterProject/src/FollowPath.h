@@ -14,5 +14,7 @@ public:
 
 private:
 	std::list<Graph::Node*>* m_path = nullptr;
+
+	int m_index = 0;
 };
 
