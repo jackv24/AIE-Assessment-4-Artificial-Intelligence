@@ -31,11 +31,3 @@ void FollowPath::Update(Agent *pAgent, float deltaTime)
 		}
 	}
 }
-
-void FollowPath::SetPath(std::list<Graph::Node*>* path)
-{
-	m_path = path;
-	m_index = 0;
-
-	std::cout << "Set path" << std::endl;
-}

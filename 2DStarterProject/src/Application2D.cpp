@@ -16,8 +16,10 @@
 #include <fstream>
 #include <ctime>
 
+#include "FollowPath.h"
+
 Scene* scene;
-Agent* agent;
+Agent* moonAgent;
 
 Graph* graph;
 std::list<Graph::Node*> pathNodes;
@@ -43,14 +45,15 @@ bool Application2D::startup() {
 	m_font = new Font("./bin/font/consolas.ttf", 32);
 
 	graph = new Graph();
-	graph->GenerateNodeGrid(11, 22, 50);
+	graph->GenerateNodeGrid(5, 10, 50);
 	circleTex = new Texture("textures/circle.png");
 
 	scene = new Scene();
 
 	//Create sun as root
-	agent = new Agent("textures/Moon.png", Vector3(640, 360, 1), 0, Vector3(1, 1, 1), graph);
-	scene->SetRoot(agent);
+	moonAgent = new Agent("textures/Moon.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));
+	scene->SetRoot(moonAgent);
+	moonAgent->AddBehaviour(new FollowPath());
 
 	return true;
 }
@@ -59,7 +62,7 @@ void Application2D::shutdown() {
 
 	delete scene;
 
-	delete agent;
+	delete moonAgent;
 
 	delete graph;
 
@@ -77,42 +80,12 @@ bool Application2D::update(float deltaTime) {
 		return false;
 
 	//Drawing sprites
-	agent->Update(deltaTime);
+	moonAgent->Update(deltaTime);
 
 	scene->UpdateTransforms();
 
 	//Detect keypress
-	//Save
-	if (isKeyPressed(GLFW_KEY_K))
-	{
-		if (!isKeyHeld)
-		{
-			isKeyHeld = true;
-			std::cout << "Saved tree" << std::endl;
-
-			std::ofstream file("data.dat", std::ios::out | std::ios::binary);
-			
-			agent->SaveTree(file);
-
-			file.close();
-		}
-	}
-	//Load
-	else if (isKeyPressed(GLFW_KEY_L))
-	{
-		if (!isKeyHeld)
-		{
-			isKeyHeld = true;
-			std::cout << "Loaded tree" << std::endl;
-
-			std::ifstream file("data.dat", std::ios::in | std::ios::binary);
-
-			agent->LoadTree(file);
-
-			file.close();
-		}
-	}
-	else if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+	if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
 	{
 		if (!isKeyHeld)
 		{
@@ -125,12 +98,12 @@ bool Application2D::update(float deltaTime) {
 
 			if (node)
 			{
-				graph->start = graph->FindClosestNode(Vector2(agent->GetPosition().x, agent->GetPosition().y));
+				graph->start = graph->FindClosestNode(Vector2(moonAgent->GetPosition().x, moonAgent->GetPosition().y));
 
 				graph->end = node;
 
 				graph->FindAStarPath(graph->start, graph->end, pathNodes);
-				agent->SetPath(&pathNodes);
+				moonAgent->SetPath(&pathNodes);
 			}
 		}
 	}
@@ -216,7 +189,7 @@ void Application2D::draw() {
 	// begin drawing sprites
 	m_spriteBatch->begin();
 
-	agent->Draw(m_spriteBatch);
+	moonAgent->Draw(m_spriteBatch);
 	
 	for (unsigned int i = 0; i < graph->nodes.size(); i++)
 	{

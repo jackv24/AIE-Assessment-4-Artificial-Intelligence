@@ -12,7 +12,7 @@ class IBehaviour;
 class Agent : public SceneNode
 {
 public:
-	Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale, Graph* pathGraph);
+	Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale);
 	~Agent();
 
 	void Update(float deltaTime);
@@ -21,6 +21,8 @@ public:
 	void AddForce(const Vector2 force);
 
 	void SetPath(std::list<Graph::Node*>* path);
+
+	void AddBehaviour(IBehaviour* behaviour);
 
 protected:
 	std::vector<IBehaviour*> m_behaviours;

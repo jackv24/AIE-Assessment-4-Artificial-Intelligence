@@ -1,8 +1,7 @@
 #include "Agent.h"
 #include "IBehaviour.h"
-#include "FollowPath.h"
 
-Agent::Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale, Graph* pathGraph)
+Agent::Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale)
 {
 	m_sprite = new Texture(texturePath);
 
@@ -11,8 +10,6 @@ Agent::Agent(const char* texturePath, const Vector3 position, const float rotati
 	Matrix3 m_translation = Matrix3::CreateTranslation(position);
 
 	m_local_transform = m_scale * m_rotation * m_translation;
-
-	m_behaviours.push_back(new FollowPath());
 }
 Agent::~Agent()
 {
@@ -46,4 +43,9 @@ void Agent::SetPath(std::list<Graph::Node*>* path)
 {
 	for (auto iter = m_behaviours.begin(); iter != m_behaviours.end(); iter++)
 		(*iter)->SetPath(path);
+}
+
+void Agent::AddBehaviour(IBehaviour* behaviour)
+{
+	m_behaviours.push_back(behaviour);
 }
