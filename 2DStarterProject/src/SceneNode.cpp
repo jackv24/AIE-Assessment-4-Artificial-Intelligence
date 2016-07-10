@@ -10,6 +10,12 @@ SceneNode::SceneNode()
 }
 SceneNode::~SceneNode()
 {
+	//Delete all children (calling their destructors and deleting their children
+	for (unsigned int i = 0; i < m_children.size(); i++)
+	{
+		delete m_children[i];
+	}
+
 	m_children.clear();
 }
 

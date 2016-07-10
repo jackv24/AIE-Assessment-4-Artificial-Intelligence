@@ -154,8 +154,6 @@ bool Graph::RemoveNode(Node* node)
 	if (node == nullptr)
 		return false;
 
-	bool isRemoved = false;
-
 	//For every connection from every node connected to the node to be deleted...
 	for (int i = node->connections.size() - 1; i >= 0; i--)
 		for (int j = node->connections[i].connection->connections.size() - 1; j >= 0; j--)
@@ -163,7 +161,6 @@ bool Graph::RemoveNode(Node* node)
 			if (node->connections[i].connection->connections[j].connection == node)
 			{
 				node->connections[i].connection->connections.erase(node->connections[i].connection->connections.begin() + j);
-				isRemoved = true;
 			}
 
 	//Erase the node from the graph
@@ -174,7 +171,7 @@ bool Graph::RemoveNode(Node* node)
 	start = nullptr;
 	end = nullptr;
 
-	return isRemoved;
+	return true;
 }
 
 // Searches the graph starting from the "start" node untill one of

@@ -9,6 +9,8 @@ bool BaseApplication::createWindow(const char* title, int width, int height) {
 	if (glfwInit() == GL_FALSE)
 		return false;
 
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
 	m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (m_window == nullptr) {
 		glfwTerminate();
@@ -25,7 +27,7 @@ bool BaseApplication::createWindow(const char* title, int width, int height) {
 
 	glfwSetWindowSizeCallback(m_window, [](GLFWwindow*, int w, int h){ glViewport(0, 0, w, h); });
 
-	glClearColor(0, 0, 0, 1);
+	glClearColor(1, 1, 1, 1);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

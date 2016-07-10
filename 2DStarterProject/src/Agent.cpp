@@ -14,6 +14,12 @@ Agent::Agent(const char* texturePath, const Vector3 position, const float rotati
 Agent::~Agent()
 {
 	delete m_sprite;
+
+	for (unsigned int i = 0; i < m_behaviours.size(); i++)
+	{
+		delete m_behaviours[i];
+	}
+	m_behaviours.clear();
 }
 
 void Agent::Update(float deltaTime)

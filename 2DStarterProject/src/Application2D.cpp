@@ -1,4 +1,5 @@
 #include "Application2D.h"
+
 #include <GLFW/glfw3.h>
 
 #include "SpriteBatch.h"
@@ -45,13 +46,13 @@ bool Application2D::startup() {
 	m_font = new Font("./bin/font/consolas.ttf", 32);
 
 	graph = new Graph();
-	graph->GenerateNodeGrid(5, 10, 50);
-	circleTex = new Texture("textures/circle.png");
+	graph->GenerateNodeGrid(13, 24, 51);
+	circleTex = new Texture("./bin/textures/circle.png");
 
 	scene = new Scene();
 
 	//Create sun as root
-	moonAgent = new Agent("textures/Moon.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));
+	moonAgent = new Agent("./bin/textures/Moon.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));
 	scene->SetRoot(moonAgent);
 	moonAgent->AddBehaviour(new FollowPath());
 
@@ -61,14 +62,11 @@ bool Application2D::startup() {
 void Application2D::shutdown() {
 
 	delete scene;
-
 	delete moonAgent;
-
 	delete graph;
-
 	delete m_spriteBatch;
-
 	delete m_font;
+	delete circleTex;
 
 	destroyWindow();
 }
@@ -189,35 +187,32 @@ void Application2D::draw() {
 	// begin drawing sprites
 	m_spriteBatch->begin();
 
+	//Draw agents
 	moonAgent->Draw(m_spriteBatch);
 	
+	//Draw graph of nodes
 	for (unsigned int i = 0; i < graph->nodes.size(); i++)
 	{
-		//Set colour of start and end nodes
-		if (graph->nodes[i] == graph->start || graph->nodes[i] == graph->end)
-			m_spriteBatch->setSpriteColor(0, 255, 255, 1);
-		else
-			m_spriteBatch->setSpriteColor(128, 128, 128, 1);
+		//Set node colour
+		m_spriteBatch->setSpriteColor(0.75f, 0.75f, 0.75f, 1);
 
 		if (pathNodes.size() > 0)
 		{
 			//Set colour of path nodes
 			if (std::find(pathNodes.begin(), pathNodes.end(), graph->nodes[i]) != pathNodes.end())
-				m_spriteBatch->setSpriteColor(255, 255, 0, 1);
-			else
-				m_spriteBatch->setSpriteColor(128, 128, 128, 1);
+				m_spriteBatch->setSpriteColor(1, 1, 0, 1);
 		}
 
+		//Draw node
 		m_spriteBatch->drawSprite(circleTex, graph->nodes[i]->position.x, graph->nodes[i]->position.y, 16, 16, 0, 0, 0.5f, 0.5f);
 
-		m_spriteBatch->setSpriteColor(1, 1, 1, 0.75f);
+		m_spriteBatch->setSpriteColor(0, 0, 0, 0.1f);
+		//Draw edges
 		for (Graph::Edge edge : graph->nodes[i]->connections)
 		{
 			m_spriteBatch->drawLine(graph->nodes[i]->position.x, graph->nodes[i]->position.y, edge.connection->position.x, edge.connection->position.y, 2.0f, 1);
 		}
 	}
-
-	m_spriteBatch->drawText(m_font, "Controls:\n - Set start/end nodes: Left Click\n - Create Node: Right Click", 200, 500);
 
 	// done drawing sprites
 	m_spriteBatch->end();	

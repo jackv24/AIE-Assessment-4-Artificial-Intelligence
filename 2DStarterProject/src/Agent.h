@@ -13,7 +13,7 @@ class Agent : public SceneNode
 {
 public:
 	Agent(const char* texturePath, const Vector3 position, const float rotation, const Vector3 scale);
-	~Agent();
+	virtual ~Agent();
 
 	void Update(float deltaTime);
 	void Draw(SpriteBatch* spriteBatch);

@@ -8,7 +8,7 @@ class SceneNode
 {
 public:
 	SceneNode();
-	~SceneNode();
+	virtual ~SceneNode();
 
 	void SetParent(SceneNode* node);
 	void AddChild(SceneNode* node);
