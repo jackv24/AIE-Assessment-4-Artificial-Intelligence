@@ -44,11 +44,8 @@ public:
 	bool RemoveNode(Node* node);
 
 	void FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &outPath);
-	void FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outPath);
+	std::list<Node*>* FindAStarPath(Node* startNode, Node* endNode);
 
 	std::vector<Node*> nodes;
-
-	Node* start = nullptr;
-	Node* end = nullptr;
 };
 

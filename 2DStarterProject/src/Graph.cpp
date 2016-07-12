@@ -49,8 +49,7 @@ Graph::Node::Node(Vector2 a_pos, float a_gScore, Node* a_parent)
 //Graph functions
 Graph::Graph()
 {
-	start = nullptr;
-	end = nullptr;
+	
 }
 Graph::~Graph()
 {
@@ -106,24 +105,31 @@ Graph::Node* Graph::FindClosestNode(Vector2 pos)
 //Generates a grid of nodes
 void Graph::GenerateNodeGrid(float sizeX, float sizeY, float padding)
 {
+	//Seed random function
 	srand((unsigned int)time(NULL));
 
+	//Generate grid of nodes
 	for (int y = 0; y < sizeX; y++)
 	{
 		for (int x = 0; x < sizeY; x++)
 		{
+			//2 in 3 chance for a node to be generated
 			if(rand() % 3 > 0)
 				nodes.push_back(new Node(Vector2(x * padding + padding, y * padding + padding)));
 		}
 	}
 
+	//Connect all nodes that are close
+	//Loop through all nodes twice (to get source and destination)
 	for (Node* src : nodes)
 	{
 		for (Node* dest : nodes)
 		{
+			//Get distance between nodes
 			float distance = Vector2(dest->position - src->position).magnitude();
 
-			if (distance < 100 && src != dest)
+			//Connect nodes if they are within a certain distance of pixels
+			if (distance < 75 && src != dest)
 				AddConnection(src, dest);
 		}
 	}
@@ -143,7 +149,7 @@ void Graph::AddNode(Vector2 position)
 			float distance = Vector2(dest->position - src->position).magnitude();
 
 			//If within arbitrary distance, add connection
-			if (distance < 100 && src != dest)
+			if (distance < 75 && src != dest)
 				AddConnection(src, dest);
 		}
 	}
@@ -167,9 +173,6 @@ bool Graph::RemoveNode(Node* node)
 	nodes.erase(std::remove(nodes.begin(), nodes.end(), node), nodes.end());
 	//Delete the node from memory (which also deletes it's own edges)
 	delete node;
-
-	start = nullptr;
-	end = nullptr;
 
 	return true;
 }
@@ -238,7 +241,7 @@ void Graph::FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &
 	outPath = path;
 }
 //A* pathfinding (modification of Dijkstra's)
-void Graph::FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outPath)
+std::list<Graph::Node*>* Graph::FindAStarPath(Node* startNode, Node* endNode)
 {
 	for (Node* node : nodes)
 	{
@@ -288,15 +291,15 @@ void Graph::FindAStarPath(Node* startNode, Node* endNode, std::list<Node*> &outP
 		}
 	}
 
-	std::list<Node*> path;
+	std::list<Node*>* path = new std::list<Node*>();
 	currentNode = endNode;
 
 	//Follow path backwards to get output path
 	while (currentNode != NULL)
 	{
-		path.push_front(currentNode);
+		path->push_front(currentNode);
 		currentNode = currentNode->parent;
 	}
 
-	outPath = path;
+	return path;
 }

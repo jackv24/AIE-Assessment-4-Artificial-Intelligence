@@ -14,6 +14,7 @@
     <ClCompile Include="src\Agent.cpp" />
     <ClCompile Include="src\BaseApplication.cpp" />
     <ClCompile Include="src\Composite.cpp" />
+    <ClCompile Include="src\GetPath.cpp" />
     <ClCompile Include="src\FollowPath.cpp" />
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\gl_core_4_4.c" />
@@ -23,6 +24,8 @@
     <ClCompile Include="src\Application2D.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneNode.cpp" />
+    <ClCompile Include="src\Selector.cpp" />
+    <ClCompile Include="src\Sequence.cpp" />
     <ClCompile Include="src\SpriteBatch.cpp" />
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
@@ -30,6 +33,7 @@
     <ClInclude Include="src\Agent.h" />
     <ClInclude Include="src\BaseApplication.h" />
     <ClInclude Include="src\Composite.h" />
+    <ClInclude Include="src\GetPath.h" />
     <ClInclude Include="src\FollowPath.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\gl_core_4_4.h" />
@@ -38,6 +42,8 @@
     <ClInclude Include="src\IBehaviour.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SceneNode.h" />
+    <ClInclude Include="src\Selector.h" />
+    <ClInclude Include="src\Sequence.h" />
     <ClInclude Include="src\SpriteBatch.h" />
     <ClInclude Include="src\Texture.h" />
   </ItemGroup>

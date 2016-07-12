@@ -15,11 +15,8 @@ Agent::~Agent()
 {
 	delete m_sprite;
 
-	for (unsigned int i = 0; i < m_behaviours.size(); i++)
-	{
-		delete m_behaviours[i];
-	}
-	m_behaviours.clear();
+	//Deleting root node will call destructors on children
+	delete m_behaviourTree;
 }
 
 void Agent::Update(float deltaTime)
@@ -29,8 +26,9 @@ void Agent::Update(float deltaTime)
 	//Add or remove behaviours from m_behaviours
 
 	//Acting
-	for (auto iter = m_behaviours.begin(); iter != m_behaviours.end(); iter++)
-		(*iter)->Update(this, deltaTime);
+	//Calling update on the root node of the tree
+	if(m_behaviourTree != nullptr)
+		m_behaviourTree->Update(this, deltaTime);
 
 	//TODO: Physics stuff force, acceleration, velocity, etc...
 }
@@ -45,13 +43,16 @@ void Agent::AddForce(const Vector2 force)
 	m_local_transform = Matrix3::CreateTranslation(Vector3(force.x, force.y, 1)) * m_local_transform;
 }
 
-void Agent::SetPath(std::list<Graph::Node*>* path)
+void Agent::SetBehaviourTree(IBehaviour* behaviour)
 {
-	for (auto iter = m_behaviours.begin(); iter != m_behaviours.end(); iter++)
-		(*iter)->SetPath(path);
+	m_behaviourTree = behaviour;
 }
 
-void Agent::AddBehaviour(IBehaviour* behaviour)
+void Agent::SetPath(std::list<Graph::Node*>* path)
 {
-	m_behaviours.push_back(behaviour);
+	m_path = path;
+}
+std::list<Graph::Node*>* Agent::GetPath()
+{
+	return m_path;
 }

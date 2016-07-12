@@ -7,8 +7,11 @@ class FollowPath : public IBehaviour
 {
 public:
 	FollowPath();
-	~FollowPath();
+	virtual ~FollowPath();
 
-	virtual void Update(Agent *pAgent, float deltaTime);
+	virtual Result Update(Agent *pAgent, float deltaTime);
+
+private:
+	unsigned int m_index = 0;
 };
 

@@ -2,7 +2,6 @@
 
 class IBehaviour;
 
-#include <vector>
 #include "SceneNode.h"
 #include "Texture.h"
 #include "Vector2.h"
@@ -20,12 +19,15 @@ public:
 
 	void AddForce(const Vector2 force);
 
-	void SetPath(std::list<Graph::Node*>* path);
+	void SetBehaviourTree(IBehaviour* behaviour);
 
-	void AddBehaviour(IBehaviour* behaviour);
+	void SetPath(std::list<Graph::Node*>* path);
+	std::list<Graph::Node*>* GetPath();
 
 protected:
-	std::vector<IBehaviour*> m_behaviours;
+	IBehaviour* m_behaviourTree = nullptr; //root node of tree
+
+	std::list<Graph::Node*>* m_path = nullptr;
 
 	Vector2 m_force;
 	Vector2 m_acceleration;

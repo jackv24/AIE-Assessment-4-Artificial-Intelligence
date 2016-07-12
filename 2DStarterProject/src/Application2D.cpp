@@ -17,13 +17,17 @@
 #include <fstream>
 #include <ctime>
 
+#include "Sequence.h"
 #include "FollowPath.h"
+#include "GetPath.h"
 
 Scene* scene;
-Agent* moonAgent;
+SceneNode* root;
+Agent* player;
+Agent* enemy;
+Agent* target;
 
 Graph* graph;
-std::list<Graph::Node*> pathNodes;
 
 bool isKeyHeld = false;
 
@@ -51,10 +55,27 @@ bool Application2D::startup() {
 
 	scene = new Scene();
 
-	//Create sun as root
-	moonAgent = new Agent("./bin/textures/Moon.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));
-	scene->SetRoot(moonAgent);
-	moonAgent->AddBehaviour(new FollowPath());
+	//Create origin node as scene root
+	root = new SceneNode();
+	scene->SetRoot(root);
+
+	//Create player
+	player = new Agent("./bin/textures/player.png", Vector3(255, 255, 1), 0, Vector3(1, 1, 1));
+	root->AddChild(player); //Child of scene root
+
+	//Create enemy
+	enemy = new Agent("./bin/textures/enemy.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));
+	root->AddChild(enemy);
+	//Create enemy behavior tree
+	Sequence* follow = new Sequence();
+	follow->AddChild(new GetPath(player, graph));
+	follow->AddChild(new FollowPath());
+	//Set root behaviour
+	enemy->SetBehaviourTree(follow);
+
+	//Create target
+	target = new Agent("./bin/textures/target.png", Vector3(408, 255, 1), 0, Vector3(1, 1, 1));
+	root->AddChild(target);
 
 	return true;
 }
@@ -62,7 +83,8 @@ bool Application2D::startup() {
 void Application2D::shutdown() {
 
 	delete scene;
-	delete moonAgent;
+	//Deleting scene root also deletes all children recursively
+	delete root;
 	delete graph;
 	delete m_spriteBatch;
 	delete m_font;
@@ -77,38 +99,19 @@ bool Application2D::update(float deltaTime) {
 	if (hasWindowClosed() || isKeyPressed(GLFW_KEY_ESCAPE))
 		return false;
 
-	//Drawing sprites
-	moonAgent->Update(deltaTime);
+	//Updating agents
+	player->Update(deltaTime);
+	enemy->Update(deltaTime);
+	target->Update(deltaTime);
 
 	scene->UpdateTransforms();
 
 	//Detect keypress
-	if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+	//Right click to create node
+	if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		if (!isKeyHeld)
-		{
-			isKeyHeld = true;
-
-			int x, y;
-			getCursorPosition(x, y);
-			//Find node at position (within range) take screen height because of how the screen height is found
-			Graph::Node* node = graph->FindClosestNode(Vector2((float)x, 720.0f - (float)y));
-
-			if (node)
-			{
-				graph->start = graph->FindClosestNode(Vector2(moonAgent->GetPosition().x, moonAgent->GetPosition().y));
-
-				graph->end = node;
-
-				graph->FindAStarPath(graph->start, graph->end, pathNodes);
-				moonAgent->SetPath(&pathNodes);
-			}
-		}
-	}
-	else if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
-	{
-		if (!isKeyHeld)
-		{
+		{	//Key can not be held
 			isKeyHeld = true;
 			int x, y;
 			getCursorPosition(x, y);
@@ -116,66 +119,18 @@ bool Application2D::update(float deltaTime) {
 			graph->AddNode(Vector2((float)x, 720.0f - (float)y));
 		}
 	}
+	//Middle click to delete node
 	else if (isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE))
 	{
 		int x, y;
 		getCursorPosition(x, y);
 
-		if (graph->RemoveNode(graph->FindNode(Vector2((float)x, 720.0f - (float)y), 25.0f)))
-			pathNodes.clear();
+		graph->RemoveNode(graph->FindNode(Vector2((float)x, 720.0f - (float)y), 25.0f));
 	}
-	//Press button to pathfind
-	/*
-	else if (isKeyPressed(GLFW_KEY_D))
-	{
-		if (!isKeyHeld)
-		{
-			isKeyHeld = true;
-
-			//If there is a start and end node, find a path between them
-			if (graph->start && graph->end)
-			{
-				//Start timer
-				std::clock_t start;
-				start = std::clock();
-
-				//graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
-				graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
-
-				//Print out time taken to execute pathfinding function (in milliseconds)
-				std::cout << "Time taken (Dijkstra's): " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << "ms" << std::endl;
-
-				agent->SetPath(&pathNodes);
-			}
-		}
-	}
-	else if (isKeyPressed(GLFW_KEY_A))
-	{
-		if (!isKeyHeld)
-		{
-			isKeyHeld = true;
-
-			//If there is a start and end node, find a path between them
-			if (graph->start && graph->end)
-			{
-				//Start timer
-				std::clock_t start;
-				start = std::clock();
-
-				//graph->FindDijkstrasPath(graph->start, graph->end, pathNodes);
-				graph->FindAStarPath(graph->start, graph->end, pathNodes);
-
-				//Print out time taken to execute pathfinding function (in milliseconds)
-				std::cout << "Time taken (A*): " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << "ms" << std::endl;
-
-				agent->SetPath(&pathNodes);
-			}
-		}
-	}*/
-	else
+	else //Makes sure that keys that can not be held are only called on key down
 		isKeyHeld = false;
 
-	// the applciation closes if we return false
+	// the application closes if we return false
 	return true;
 }
 
@@ -188,7 +143,9 @@ void Application2D::draw() {
 	m_spriteBatch->begin();
 
 	//Draw agents
-	moonAgent->Draw(m_spriteBatch);
+	player->Draw(m_spriteBatch);
+	enemy->Draw(m_spriteBatch);
+	target->Draw(m_spriteBatch);
 	
 	//Draw graph of nodes
 	for (unsigned int i = 0; i < graph->nodes.size(); i++)
@@ -196,11 +153,11 @@ void Application2D::draw() {
 		//Set node colour
 		m_spriteBatch->setSpriteColor(0.75f, 0.75f, 0.75f, 1);
 
-		if (pathNodes.size() > 0)
+		//Set enemy path colour
+		if (enemy->GetPath()->size() > 0)
 		{
-			//Set colour of path nodes
-			if (std::find(pathNodes.begin(), pathNodes.end(), graph->nodes[i]) != pathNodes.end())
-				m_spriteBatch->setSpriteColor(1, 1, 0, 1);
+			if (std::find(enemy->GetPath()->begin(), enemy->GetPath()->end(), graph->nodes[i]) != enemy->GetPath()->end())
+				m_spriteBatch->setSpriteColor(1, 0.75f, 0.75f, 1);
 		}
 
 		//Draw node

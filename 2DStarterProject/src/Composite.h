@@ -7,10 +7,14 @@ class Composite : public IBehaviour
 {
 public:
 	Composite();
-	~Composite();
+	virtual ~Composite();
 
-	virtual void Update(Agent *pAgent, float deltaTime);
+	virtual Result Update(Agent *pAgent, float deltaTime) = 0;
 
-	std::list<IBehaviour*> childBehaviours;
+	void AddChild(IBehaviour* behaviour);
+
+protected:
+	std::vector<IBehaviour*> m_childBehaviours;
+	IBehaviour* m_pendingChild = nullptr;
 };
 

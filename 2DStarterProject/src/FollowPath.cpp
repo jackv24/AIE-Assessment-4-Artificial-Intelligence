@@ -11,15 +11,17 @@ FollowPath::~FollowPath()
 {
 }
 
-void FollowPath::Update(Agent *pAgent, float deltaTime)
+FollowPath::Result FollowPath::Update(Agent *pAgent, float deltaTime)
 {
 	Vector2 agentPos(pAgent->GetPosition().x, pAgent->GetPosition().y);
 
-	if (m_path != nullptr && m_path->size() > 0)
+	std::list<Graph::Node*>* path = pAgent->GetPath();
+
+	if (path != nullptr && path->size() > 0)
 	{
-		if (m_index < m_path->size())
+		if (m_index < path->size())
 		{
-			std::list<Graph::Node*>::iterator it = m_path->begin();
+			std::list<Graph::Node*>::iterator it = path->begin();
 			std::advance(it, m_index);
 
 			if ((pAgent->GetPosition() - (*it)->position).magnitude() < 5)
@@ -28,6 +30,17 @@ void FollowPath::Update(Agent *pAgent, float deltaTime)
 			Vector3 direction = (pAgent->GetPosition() - (*it)->position) * -1;
 			direction.normalise();
 			pAgent->Translate(direction * deltaTime * 200);
+
+			//Still following path
+			return Pending;
 		}
+
+		//Successfully followed path
+		m_index = 0;
+
+		return Success;
 	}
+
+	//No path to follow
+	return Failure;
 }
