@@ -20,6 +20,7 @@
 #include "Sequence.h"
 #include "FollowPath.h"
 #include "GetPath.h"
+#include "KeyboardController.h"
 
 Scene* scene;
 SceneNode* root;
@@ -62,6 +63,10 @@ bool Application2D::startup() {
 	//Create player
 	player = new Agent("./bin/textures/player.png", Vector3(255, 255, 1), 0, Vector3(1, 1, 1));
 	root->AddChild(player); //Child of scene root
+	//Set player behaviour
+	KeyboardController* controller = new KeyboardController();
+	controller->SetWindow(m_window);
+	player->SetBehaviourTree(controller);
 
 	//Create enemy
 	enemy = new Agent("./bin/textures/enemy.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));

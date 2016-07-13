@@ -69,6 +69,9 @@ void Vector2::normalise()
 {
 	float length = magnitude();
 
-	x /= length;
-	y /= length;
+	if (length != 0)
+	{
+		x /= length;
+		y /= length;
+	}
 }

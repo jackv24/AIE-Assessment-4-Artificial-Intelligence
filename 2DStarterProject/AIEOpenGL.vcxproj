@@ -20,6 +20,7 @@
     <ClCompile Include="src\gl_core_4_4.c" />
     <ClCompile Include="src\Graph.cpp" />
     <ClCompile Include="src\IBehaviour.cpp" />
+    <ClCompile Include="src\KeyboardController.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Application2D.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="src\Application2D.h" />
     <ClInclude Include="src\Graph.h" />
     <ClInclude Include="src\IBehaviour.h" />
+    <ClInclude Include="src\KeyboardController.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SceneNode.h" />
     <ClInclude Include="src\Selector.h" />
