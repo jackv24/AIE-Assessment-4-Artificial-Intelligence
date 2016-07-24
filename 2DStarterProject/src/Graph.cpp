@@ -45,6 +45,10 @@ Graph::Node::Node(Vector2 a_pos, float a_gScore, Node* a_parent)
 	fScore = 0;
 	parent = a_parent;
 }
+Graph::Node::~Node()
+{
+	connections.clear();
+}
 
 //Graph functions
 Graph::Graph()
@@ -243,6 +247,10 @@ void Graph::FindDijkstrasPath(Node* startNode, Node* endNode, std::list<Node*> &
 //A* pathfinding (modification of Dijkstra's)
 std::list<Graph::Node*>* Graph::FindAStarPath(Node* startNode, Node* endNode)
 {
+	//Preliminary check to prevent errors
+	if (startNode == nullptr || endNode == nullptr)
+		return nullptr;
+
 	for (Node* node : nodes)
 	{
 		node->gScore = std::numeric_limits<float>::max();

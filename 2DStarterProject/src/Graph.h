@@ -22,6 +22,7 @@ public:
 		Node();
 		Node(Vector2 a_pos);
 		Node(Vector2 a_pos, float a_gScore, Node* a_parent);
+		~Node();
 
 		Vector2 position;
 		float gScore;
