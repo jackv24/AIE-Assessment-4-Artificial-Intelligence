@@ -21,6 +21,7 @@
 #include "FollowPath.h"
 #include "GetPath.h"
 #include "KeyboardController.h"
+#include "GetRandomNode.h"
 
 Scene* scene;
 SceneNode* root;
@@ -79,8 +80,14 @@ bool Application2D::startup() {
 	enemy->SetBehaviourTree(follow);
 
 	//Create target
-	target = new Agent("./bin/textures/target.png", Vector3(408, 255, 1), 0, Vector3(1, 1, 1));
+	target = new Agent("./bin/textures/target.png", Vector3(400, 250, 1), 0, Vector3(1, 1, 1));
 	root->AddChild(target);
+	//create behaviour tree
+	Sequence* wander = new Sequence();
+	wander->AddChild(new GetRandomNode(200, 400, graph));
+	wander->AddChild(new FollowPath());
+	//Set root behaviour
+	target->SetBehaviourTree(wander);
 
 	return true;
 }
@@ -163,6 +170,12 @@ void Application2D::draw() {
 		{
 			if (std::find(enemy->GetPath()->begin(), enemy->GetPath()->end(), graph->nodes[i]) != enemy->GetPath()->end())
 				m_spriteBatch->setSpriteColor(1, 0.75f, 0.75f, 1);
+		}
+		//Set target path colour
+		if (target->GetPath()->size() > 0)
+		{
+			if (std::find(target->GetPath()->begin(), target->GetPath()->end(), graph->nodes[i]) != target->GetPath()->end())
+				m_spriteBatch->setSpriteColor(0.75f, 1, 0.75f, 1);
 		}
 
 		//Draw node

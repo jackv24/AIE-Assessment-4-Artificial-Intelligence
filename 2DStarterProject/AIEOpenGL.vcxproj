@@ -17,6 +17,7 @@
     <ClCompile Include="src\GetPath.cpp" />
     <ClCompile Include="src\FollowPath.cpp" />
     <ClCompile Include="src\Font.cpp" />
+    <ClCompile Include="src\GetRandomNode.cpp" />
     <ClCompile Include="src\gl_core_4_4.c" />
     <ClCompile Include="src\Graph.cpp" />
     <ClCompile Include="src\IBehaviour.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="src\GetPath.h" />
     <ClInclude Include="src\FollowPath.h" />
     <ClInclude Include="src\Font.h" />
+    <ClInclude Include="src\GetRandomNode.h" />
     <ClInclude Include="src\gl_core_4_4.h" />
     <ClInclude Include="src\Application2D.h" />
     <ClInclude Include="src\Graph.h" />
