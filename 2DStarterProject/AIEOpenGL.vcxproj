@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\Agent.cpp" />
     <ClCompile Include="src\BaseApplication.cpp" />
+    <ClCompile Include="src\CheckRange.cpp" />
     <ClCompile Include="src\Composite.cpp" />
     <ClCompile Include="src\GetPath.cpp" />
     <ClCompile Include="src\FollowPath.cpp" />
@@ -34,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="src\Agent.h" />
     <ClInclude Include="src\BaseApplication.h" />
+    <ClInclude Include="src\CheckRange.h" />
     <ClInclude Include="src\Composite.h" />
     <ClInclude Include="src\GetPath.h" />
     <ClInclude Include="src\FollowPath.h" />

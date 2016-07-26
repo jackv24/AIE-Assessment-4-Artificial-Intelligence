@@ -18,8 +18,16 @@ Selector::Result Selector::Update(Agent *pAgent, float deltaTime)
 	if (child == nullptr)
 		child = m_childBehaviours.front();
 
+	//Find index of child
+	unsigned int index = -1;
+	for (int i = 0; i < m_childBehaviours.size(); i++)
+	{
+		if (m_childBehaviours[i] == child)
+			index = i;
+	}
+
 	//While the child is in the list
-	while (std::find(m_childBehaviours.begin(), m_childBehaviours.end(), child) != m_childBehaviours.end())
+	while (index < m_childBehaviours.size())
 	{
 		//Get result of updating child
 		Result result = child->Update(pAgent, deltaTime);
@@ -29,7 +37,11 @@ Selector::Result Selector::Update(Agent *pAgent, float deltaTime)
 			return Success;
 		//If the child failed, move on to the next child
 		else if (result == Failure)
-			child++;
+		{
+			index++;
+			if (index < m_childBehaviours.size())
+				child = m_childBehaviours[index];
+		}
 		//If the child is still pending...
 		else if (result == Pending)
 		{

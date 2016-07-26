@@ -18,10 +18,12 @@
 #include <ctime>
 
 #include "Sequence.h"
+#include "Selector.h"
 #include "FollowPath.h"
 #include "GetPath.h"
 #include "KeyboardController.h"
 #include "GetRandomNode.h"
+#include "CheckRange.h"
 
 Scene* scene;
 SceneNode* root;
@@ -61,6 +63,7 @@ bool Application2D::startup() {
 	root = new SceneNode();
 	scene->SetRoot(root);
 
+	//Player
 	//Create player
 	player = new Agent("./bin/textures/player.png", Vector3(255, 255, 1), 0, Vector3(1, 1, 1));
 	root->AddChild(player); //Child of scene root
@@ -69,6 +72,7 @@ bool Application2D::startup() {
 	controller->SetWindow(m_window);
 	player->SetBehaviourTree(controller);
 
+	//Enemy
 	//Create enemy
 	enemy = new Agent("./bin/textures/enemy.png", Vector3(50, 50, 1), 0, Vector3(1, 1, 1));
 	root->AddChild(enemy);
@@ -79,15 +83,28 @@ bool Application2D::startup() {
 	//Set root behaviour
 	enemy->SetBehaviourTree(follow);
 
+	//Target
 	//Create target
 	target = new Agent("./bin/textures/target.png", Vector3(400, 250, 1), 0, Vector3(1, 1, 1));
 	root->AddChild(target);
+
 	//create behaviour tree
+	Selector* avoid = new Selector();
+
+	Sequence* flee = new Sequence();
+	flee->AddChild(new CheckRange(player, 300));
+	//flee->AddChild(new GetFurthestNode(50, 200, graph));
+	//flee->AddChild(new FollowPath());
+
 	Sequence* wander = new Sequence();
-	wander->AddChild(new GetRandomNode(200, 400, graph));
+	wander->AddChild(new GetRandomNode(50, 100, graph));
 	wander->AddChild(new FollowPath());
+
+	avoid->AddChild(flee);
+	avoid->AddChild(wander);
+
 	//Set root behaviour
-	target->SetBehaviourTree(wander);
+	target->SetBehaviourTree(avoid);
 
 	return true;
 }
@@ -166,13 +183,13 @@ void Application2D::draw() {
 		m_spriteBatch->setSpriteColor(0.75f, 0.75f, 0.75f, 1);
 
 		//Set enemy path colour
-		if (enemy->GetPath()->size() > 0)
+		if (enemy->GetPath() != nullptr)
 		{
 			if (std::find(enemy->GetPath()->begin(), enemy->GetPath()->end(), graph->nodes[i]) != enemy->GetPath()->end())
 				m_spriteBatch->setSpriteColor(1, 0.75f, 0.75f, 1);
 		}
 		//Set target path colour
-		if (target->GetPath()->size() > 0)
+		if (target->GetPath() != nullptr)
 		{
 			if (std::find(target->GetPath()->begin(), target->GetPath()->end(), graph->nodes[i]) != target->GetPath()->end())
 				m_spriteBatch->setSpriteColor(0.75f, 1, 0.75f, 1);
