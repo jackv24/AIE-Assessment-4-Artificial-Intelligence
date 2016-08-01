@@ -24,6 +24,7 @@
 #include "KeyboardController.h"
 #include "GetRandomNode.h"
 #include "CheckRange.h"
+#include "GetFurthestNode.h"
 
 Scene* scene;
 SceneNode* root;
@@ -80,6 +81,7 @@ bool Application2D::startup() {
 	Sequence* follow = new Sequence();
 	follow->AddChild(new GetPath(player, graph));
 	follow->AddChild(new FollowPath());
+
 	//Set root behaviour
 	enemy->SetBehaviourTree(follow);
 
@@ -93,8 +95,8 @@ bool Application2D::startup() {
 
 	Sequence* flee = new Sequence();
 	flee->AddChild(new CheckRange(player, 300));
-	//flee->AddChild(new GetFurthestNode(50, 200, graph));
-	//flee->AddChild(new FollowPath());
+	flee->AddChild(new GetFurthestNode(player, graph));
+	flee->AddChild(new FollowPath());
 
 	Sequence* wander = new Sequence();
 	wander->AddChild(new GetRandomNode(50, 100, graph));
